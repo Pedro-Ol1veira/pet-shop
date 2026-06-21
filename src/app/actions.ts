@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from "@/lib/prisma";
+import { error } from "console";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
@@ -53,6 +54,9 @@ export async function createAppointment(data: AppointmentData) {
 
     } catch (error) {
         console.log(error);
+        return {
+            error: "Erro ao criar agendamento. Tente novamente."
+        }
     }
     
 }
@@ -102,5 +106,27 @@ export async function updateAppointment(id: string, data: AppointmentData) {
         
     } catch (error) {
         console.log(error);
+        return {
+            error: "Erro ao atualizar agendamento. Tente novamente."
+        }
+    }
+}
+
+
+
+export async function deleteAppointment(id: string) {
+    try {
+        await prisma.appointment.delete({
+            where: {
+                id
+            }
+        });
+
+        revalidatePath('/');
+    } catch (error) {
+        console.log(error);
+        return {
+            error: "Erro ao remover agendamento. Tente novamente."
+        }
     }
 }
