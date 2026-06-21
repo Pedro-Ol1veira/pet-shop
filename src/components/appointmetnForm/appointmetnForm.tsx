@@ -15,8 +15,9 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { toast } from "sonner";
-import { createAppointment } from "@/app/actions";
-import { useState } from "react";
+import { createAppointment, updateAppointment } from "@/app/actions";
+import { useEffect, useState } from "react";
+import { Appointment } from "@/types/appointments";
 
 const appointmentFormSchema = z.object({
     tutorName: z.string().min(3, "O nome do tutor é obrigatório"),
@@ -41,7 +42,12 @@ const appointmentFormSchema = z.object({
 
 type AppointmentFormValues = z.infer<typeof appointmentFormSchema>;
 
-export const AppointmentForm = () => {
+type AppointmentFormProps = {
+    appointment?: Appointment;
+    children?: React.ReactNode;
+}
+
+export const AppointmentForm = ({ appointment, children, }: AppointmentFormProps) => {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -61,8 +67,13 @@ export const AppointmentForm = () => {
         const [ hour, minute ] = data.time.split(":");
         const scheduleAt = new Date(data.scheduleAt);
         scheduleAt.setHours(Number(hour), Number(minute), 0, 0);
+
+        const isEdit = !!appointment?.id;
         
-        const result = await createAppointment({
+        const result = isEdit ? await updateAppointment(appointment.id, {
+            ...data,
+            scheduleAt
+        }) : await createAppointment({
             ...data,
             scheduleAt,
         })
@@ -72,17 +83,23 @@ export const AppointmentForm = () => {
             return;
         }
         
-        toast.success(`Agendamento criado con sucesso!`);
+        toast.success(`Agendamento ${isEdit ? 'atualizado' : 'criado'} com sucesso!`);
         setIsOpen(false);
         form.reset();
         
     };
+
+    useEffect(() => {
+        form.reset(appointment);
+    }, [appointment, form]);
     
     return(
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-                <Button variant="brand">Novo Agendamento</Button>
-            </DialogTrigger>
+            {children && (
+                <DialogTrigger asChild>
+                    {children}
+                </DialogTrigger>
+            )}
 
             <DialogContent variant="appointment" overlayVariant="blurred" showCloseButton>
                 <DialogHeader>
