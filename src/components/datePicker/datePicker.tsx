@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react"
 import { addDays, format, isValid } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { Calendar } from "../ui/calendar"
+import { NavigationButton } from "./navigationButton"
 
 export const DatePicker = () => {
 
@@ -56,11 +57,12 @@ export const DatePicker = () => {
     
     return (
         <div className="flex items-center gap-2">
-            <Button variant="outline"
+            <NavigationButton
                 onClick={() => handleNavigateDay(-1)}
+                tooltipText="Dia anterior"
             >
                 <ChevronLeft className="h-4 w-4"/>
-            </Button>
+            </NavigationButton>
 
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                 <PopoverTrigger asChild>
@@ -94,11 +96,12 @@ export const DatePicker = () => {
                 </PopoverContent>
             </Popover>
 
-            <Button variant="outline"
+            <NavigationButton
                 onClick={() => handleNavigateDay(1)}
+                tooltipText="Proximo dia"
             >
                 <ChevronRight className="h-4 w-4"/>
-            </Button>
+            </NavigationButton>
         </div>
     )
 }
