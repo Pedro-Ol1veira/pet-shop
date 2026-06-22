@@ -46,9 +46,9 @@ export function getPeriod(hour: number): AppointmentPeriodDay {
 export function groupAppointmentsByPeriod(appointments: AppointmentPrisma[]): AppointmentPeriod[] {
   const transformedAppointments: Appointment[] = appointments.map((apt) => ({
     ...apt,
-    time: apt.date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+    time: formatDateTime(apt.date),
     service: apt.description,
-    period: getPeriod(apt.date.getHours()),
+    period: getPeriod(parseInt(formatDateTime(apt.date))),
     scheduleAt: apt.date,
   }));
 
@@ -77,3 +77,12 @@ export function groupAppointmentsByPeriod(appointments: AppointmentPrisma[]): Ap
     }
   ]
 }
+
+export function formatDateTime(date: Date): string {
+  return date.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'America/Sao_Paulo',
+  })
+} 

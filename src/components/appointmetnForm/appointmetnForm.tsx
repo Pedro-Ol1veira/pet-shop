@@ -65,8 +65,7 @@ export const AppointmentForm = ({ appointment, children, }: AppointmentFormProps
 
     const onSubmit = async (data: AppointmentFormValues) => {
         const [ hour, minute ] = data.time.split(":");
-        const scheduleAt = new Date(data.scheduleAt);
-        scheduleAt.setHours(Number(hour), Number(minute), 0, 0);
+        const scheduleAt = setMinutes(setHours(data.scheduleAt, Number(hour)), Number(minute));
 
         const isEdit = !!appointment?.id;
         
