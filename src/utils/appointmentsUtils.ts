@@ -1,5 +1,5 @@
 import { AppointmentPeriodDay, AppointmentPeriod, Appointment } from "@/types/appointments";
-import { Appointment as AppointmentPrisma } from "@/generated/prisma/browser";
+import { Appointment as AppointmentPrisma } from "@/generated/prisma";
 
 export const appointments: AppointmentPrisma[] = [
   {
